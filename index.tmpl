@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>March {{.year}} Live Lamb Lion Tracker</title>
+	<link rel="stylesheet" type="text/css" href="index.css">
+	<meta name="viewport" content="width=device-width">
+	<meta charset="utf-8">
+</head>
+<body>
+	<h1>March {{.year}} Live Lamb Lion Tracker</h1>
+<div class="summary">
+	<p class="preamble">As of {{.now.Format "01-02-2006 at 3:04 PM"}}, March is:</p>
+	<h2>In like a <span class="in"><img src="{{.in | ToLower}}.png" alt="{{.in}}"/></span>, out like a <span class="out{{if .tbd}} tbd{{end}}">{{if .tbd}}{{.out}}{{else}}<img src="{{.out | ToLower}}.png" alt="{{.out}}"/>{{end}}</span></h2>
+		{{if .tbd}}
+	<div class="postamble">
+		<p>
+		<sup>*</sup> "out like a ___" data will become available after March 15th.
+		</p>
+	</div>
+		{{end}}
+	<h3>What is this?</h3>
+	<p>This is a live-updating tally of the classic weather proverb, <a href="https://en.wikipedia.org/wiki/Weather_lore#Lion_and_Lamb">"If March comes in like a lion, it will go out like a lamb"</a>. It's based on real weather data, collected at <a href="https://weather.bigboy.us/">my weather station in Brooklyn, NY,</a> and is updated once an hour thru the end of March.</p>
+	<p>Whenever March rolls around, I always end up ceaselessly tossing this proverb around in my head, trying to get a sense of how it "fits" to the actual weather. I like the idea that any given year could be Lamb/Lamb, Lion/Lamb, Lamb/Lion, or Lion/Lion. My lamb/lion factor is calculated by weighting a combination of: whether it's rained (any rain = heavy lion), what the day's high was (medium lion < 50 degrees, heavy lion less than 45), and the wind (weak lion when it's greater than 7mph).</p>
+	<p>Please <a href="jeff@bigboy.us">email me</a> if you have questions/thoughts about how I've literalized this proverb, or <a href="https://github.com/saranrapjs/march-lion-lamb">check out the code</a>.</p>
+</div>
+<div class="dates">
+<div class="date day-of-week">Sun</div>
+<div class="date day-of-week">Mon</div>
+<div class="date day-of-week">Tue</div>
+<div class="date day-of-week">Wed</div>
+<div class="date day-of-week">Thu</div>
+<div class="date day-of-week">Fri</div>
+<div class="date day-of-week">Sat</div>
+{{ range $i, $value := .forecasts }}
+<div class="date {{if .IsLion}}is-lion{{else}}is-lamb{{end}}" {{if .Future}}data-future="true"{{end}} {{if eq $i 0 }}style="grid-column: {{$.offset}};"{{end}}>
+<span class="date-number">{{.Date.Format "2"}}</span>
+{{if not .Future}}
+<span class="rain">
+{{if gt .Rain 0.0}}
+{{.Rain}} inches
+{{else}}
+no rain
+{{end}}
+</span>
+<span class="min-temp">lo: {{printf "%.2f" .MinTemp}}°</span>
+<span class="max-temp">hi: {{printf "%.2f" .MaxTemp}}°</span>
+<span class="max-wind">wind: {{.MaxWindSpeed}} mph</span>
+{{end}}
+</div>
+{{end}}
+</div>
+</body>
+</html>

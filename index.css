@@ -1,0 +1,126 @@
+body, html {
+	max-width: 1000px;
+	margin: 0 auto 1rem;
+}
+.dates {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	max-width: 1000px;
+}
+.date {
+	border-top: 1px solid;
+	border-left: 1px solid;
+	position: relative;
+	overflow: hidden;
+}
+.date:not(.day-of-week):nth-child(7n + 3) {
+	border-right: 1px solid;
+}
+
+.date:nth-last-child(-n+7) {
+	border-bottom: 1px solid;
+}
+
+.date:not(.day-of-week):not([data-future])::before {
+    transform: rotate(-45deg) translate(-40px, 10px);
+    color: white;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 30px;
+	line-height: 30px;
+	width:80px;
+	transform-origin: 0 0;
+}
+
+.date.is-lamb:not(.day-of-week):not([data-future])::before {
+	background: green;
+	content: 'Lamb';
+}
+
+.date.is-lion:not(.day-of-week):not([data-future])::before {
+	background: red;
+	content: 'Lion';
+}
+
+.date:not(.day-of-week) {
+	padding: 1rem;
+	text-align: center;
+}
+.day-of-week {
+	font-weight: bold;
+	border:0;
+	padding-bottom: 1rem;
+}
+.date span {
+	display: block;
+}
+.date-number {
+	font-size: 3rem;
+}
+[data-future] {
+	opacity: 0.5;
+}
+
+.tbd {
+	opacity: 0.5;
+	border-bottom: dashed 2px #000;
+}
+.tbd:after {
+	content:'*';
+	vertical-align: super;
+	font-size: 20px;
+}
+
+.preamble {
+	font-style: italic;
+	margin:0;
+}
+h2 {
+	margin-top: 0;
+	margin-bottom: 0.5rem;
+}
+h2 img {
+	height: 3rem;
+	vertical-align: middle;
+}
+
+.postamble {
+	margin-bottom: 2rem;
+	font-size: 0.9rem;
+	opacity: 0.6;
+}
+.postamble p {
+	margin:0;
+}
+@media(max-width: 600px) {
+	body, html {
+		margin-left:0;
+		margin-right: 0;
+	}
+	h1, .summary {
+		margin-right: 1rem;
+		margin-left: 1rem;
+	}
+	.dates {
+		font-size: 0.5rem;
+	}
+	.date-number {
+		font-size: 2rem;
+	}
+	.date:not(.day-of-week) {
+		padding: 0;
+	}
+	.date:not(.day-of-week):not([data-future])::before {
+	    transform: rotate(-45deg) translate(-40px, 10px);
+	    color: white;
+	    position: absolute;
+	    left: 0;
+	    top: 0;
+	    height: 15px;
+		line-height: 15px;
+		width:80px;
+		font-size: 15px;
+		transform-origin: 0 0;
+	}
+}

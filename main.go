@@ -73,7 +73,7 @@ left join
 left join
     archive_day_windSpeed on archive_day_windSpeed.dateTime = archive_day_rain.dateTime
 where
-    strftime('%Y-%m', datetime(archive_day_rain.dateTime, 'unixepoch')) = strftime('%Y-%m', datetime())
+    strftime('%Y-%m', datetime(archive_day_rain.dateTime, 'unixepoch')) = strftime('%Y-03', datetime())
 order by
     archive_day_rain.dateTime asc;
 `

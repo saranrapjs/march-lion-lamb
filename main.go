@@ -32,6 +32,11 @@ func (o *Obs) AssignLion(avg *Obs) {
 	var denominator int
 	// was there rain
 	switch {
+	case o.MaxTemp >= 70.0:
+	// if it's in the 70's, it's totally lamb!
+	// even if it rained!
+		o.IsLion = false
+		return
 	// if there's anything but a trivial amount of rain,
 	// it's LION baby
 	case o.Rain > 0.03:

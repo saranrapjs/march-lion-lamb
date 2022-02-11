@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"html/template"
 	"log"
 	"os"
@@ -32,6 +33,11 @@ func (o *Obs) AssignLion(avg *Obs) {
 	var denominator int
 	// was there rain
 	switch {
+	case o.MaxTemp >= 70.0:
+		// if it's in the 70's, it's totally lamb!
+		// even if it rained!
+		o.IsLion = false
+		return
 	// if there's anything but a trivial amount of rain,
 	// it's LION baby
 	case o.Rain > 0.03:
@@ -73,7 +79,7 @@ left join
 left join
     archive_day_windSpeed on archive_day_windSpeed.dateTime = archive_day_rain.dateTime
 where
-    strftime('%Y-%m', datetime(archive_day_rain.dateTime, 'unixepoch')) = strftime('%Y-03', datetime())
+    strftime('%Y-%m', datetime(archive_day_rain.dateTime, 'unixepoch')) = ?
 order by
     archive_day_rain.dateTime asc;
 `
@@ -121,27 +127,61 @@ func updateAvg(avg, incoming *Obs, count int) {
 	avg.MaxWindSpeed = ((float64(count-1) * avg.MaxWindSpeed) + incoming.MaxWindSpeed) / float64(count)
 }
 
+func findSaturdayOffset(year int, loc *time.Location) int {
+	offset := time.Date(year, time.March, 0, 0, 0, 0, 0, loc)
+
+	for {
+		if offset.Weekday() == time.Saturday {
+			break
+		}
+
+		offset = time.Date(year, time.March, offset.Day()+1, 0, 0, 0, 0, loc)
+	}
+
+	return offset.Day()
+}
+
 func main() {
-	if len(os.Args) < 1 {
+	if len(os.Args) < 2 {
 		log.Fatal("usage: lion-lamb <path-to-weewx-db>")
 	}
 	db := os.Args[1]
 	if db == "" {
 		log.Fatal("usage: lion-lamb <path-to-weewx-db>")
 	}
+	loc, _ := time.LoadLocation("America/New_York")
+	now := time.Now().In(loc)
+
+	if len(os.Args) == 3 {
+		maybeNow, parseErr := time.Parse("2006-01-02 15:04:00", os.Args[2])
+		if parseErr != nil {
+			log.Fatal("bad date")
+		} else {
+			now = maybeNow
+		}
+	}
+
 	funcMap := template.FuncMap{
 		"ToLower": strings.ToLower,
 	}
-	loc, _ := time.LoadLocation("America/New_York")
-	now := time.Now().In(loc)
 	forecasts := []*Obs{}
 	database, _ := sql.Open("sqlite3", db+"?parseTime=true")
-	rows, err := database.Query(query)
+	rows, err := database.Query(query, fmt.Sprintf("%d-03", now.Year()))
 	templateData := map[string]interface{}{}
 	templateData["year"] = now.Year()
 	if err != nil {
 		log.Fatal("could not query: ", err)
 	}
+
+	saturdayOffset := findSaturdayOffset(now.Year(), loc)
+	templateData["saturdayOffset"] = saturdayOffset
+
+	var prevYears []int
+	for i := now.Year() - 1; i >= 2018; i-- {
+		prevYears = append(prevYears, i)
+	}
+	templateData["prevYears"] = prevYears
+
 	beginningOfMarch := now.Day() < 16 && now.Month() == 3
 	var lastRecordedDay int
 	var avg Obs
@@ -172,13 +212,13 @@ func main() {
 	templateData["out"] = out
 	for i := lastRecordedDay + 1; i <= 31; i++ {
 		o := Obs{
-			Date:   time.Date(time.Now().Year(), time.March, i, 0, 0, 0, 0, time.Local),
+			Date:   time.Date(now.Year(), time.March, i, 0, 0, 0, 0, time.Local),
 			Future: true,
 		}
 		forecasts = append(forecasts, &o)
 	}
 	templateData["forecasts"] = forecasts
-	theFirst := time.Date(time.Now().Year(), time.March, 1, 0, 0, 0, 0, time.Local)
+	theFirst := time.Date(now.Year(), time.March, 1, 0, 0, 0, 0, time.Local)
 	templateData["offset"] = int(theFirst.Weekday() + 1)
 	templateData["now"] = now
 	templateData["tbd"] = beginningOfMarch

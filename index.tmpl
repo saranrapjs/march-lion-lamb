@@ -3,6 +3,7 @@
 <head>
 	<title>March {{.year}} Live Lamb Lion Tracker</title>
 	<link rel="stylesheet" type="text/css" href="index.css">
+	<style>.date:not(.day-of-week):nth-child(7n + {{.saturdayOffset}}), .date:last-child { border-right: 1px solid; }</style>
 	<meta name="viewport" content="width=device-width">
 	<meta charset="utf-8">
 </head>
@@ -19,9 +20,9 @@
 	</div>
 		{{end}}
 	<h3>What is this?</h3>
-	<p>This is a live-updating tally of the classic weather proverb, <a href="https://en.wikipedia.org/wiki/Weather_lore#Lion_and_Lamb">"If March comes in like a lion, it will go out like a lamb"</a>. It's based on real weather data, collected at <a href="https://weather.bigboy.us/">my weather station in Brooklyn, NY,</a> and is updated once an hour thru the end of March.</p>
-	<p>Whenever March rolls around, I always end up ceaselessly tossing this proverb around in my head, trying to get a sense of how it "fits" to the actual weather. I like the idea that any given year could be Lamb/Lamb, Lion/Lamb, Lamb/Lion, or Lion/Lion. My lamb/lion factor is calculated by weighting a combination of: whether it's rained (any rain = heavy lion), what the day's high was (medium lion < 50 degrees, heavy lion less than 45), and the wind (weak lion when it's greater than 7mph).</p>
-	<p>Please <a href="jeff@bigboy.us">email me</a> if you have questions/thoughts about how I've literalized this proverb, or <a href="https://github.com/saranrapjs/march-lion-lamb/blob/master/main.go#L24-L59">check out the code I'm using to generate this</a>.</p>
+	<p>This is a live-updating tally of the classic weather proverb, <a href="https://en.wikipedia.org/wiki/Weather_lore#Lion_and_Lamb">"If March comes in like a lion, it will go out like a lamb"</a>. It's based on real weather data, collected at <a href="https://weather.bigboy.us/">my weather station in Queens, NY,</a> and is updated once an hour thru the end of March.</p>
+	<p>Whenever March rolls around, I always end up ceaselessly tossing this proverb around in my head, trying to get a sense of how it "fits" to the actual weather. I like the idea that any given year could be Lamb/Lamb, Lion/Lamb, Lamb/Lion, or Lion/Lion. My lamb/lion factor is calculated by weighting a combination of: whether it's rained (any rain below 70 degrees = heavy lion), what the day's high was (medium lion < 50 degrees, heavy lion less than 45), and the wind (weak lion when it's greater than 7mph).</p>
+	<p>Please <a href="jeff@bigboy.us">email me</a> if you have questions/thoughts about how I've literalized this proverb, or <a href="https://github.com/saranrapjs/march-lion-lamb/blob/master/main.go#L24-L59">check out the code I'm using to generate this</a>. And here are the past years' lion/lamb results:{{range .prevYears}} <a href="{{.}}.html">{{.}}</a>{{end}}</p>
 </div>
 <div class="dates">
 <div class="date day-of-week">Sun</div>

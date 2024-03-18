@@ -128,7 +128,7 @@ func updateAvg(avg, incoming *Obs, count int) {
 }
 
 func findSaturdayOffset(year int, loc *time.Location) int {
-	offset := time.Date(year, time.March, 0, 0, 0, 0, 0, loc)
+	offset := time.Date(year, time.March, 1, 0, 0, 0, 0, loc)
 
 	for {
 		if offset.Weekday() == time.Saturday {

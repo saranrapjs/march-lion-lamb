@@ -11,7 +11,7 @@
 	<h1>March {{.year}} Live Lamb Lion Tracker</h1>
 <div class="summary">
 	<p class="preamble">As of {{.now.Format "01-02-2006 at 3:04 PM"}}, March is:</p>
-	<h2>In like a <span class="in"><img src="{{.in | ToLower}}.png" alt="{{.in}}"/></span>, out like a <span class="out{{if .tbd}} tbd{{end}}">{{if .tbd}}{{.out}}{{else}}<img src="{{.out | ToLower}}.png" alt="{{.out}}"/>{{end}}</span></h2>
+	<h2>In like a <span class="in"><img alt="{{.in}}" src="{{.in | ToLower}}.png" alt="{{.in}}"/></span>, out like a <span class="out{{if .tbd}} tbd{{end}}">{{if .tbd}}{{.out}}{{else}}<img src="{{.out | ToLower}}.png" alt="{{.out}}"/>{{end}}</span></h2>
 		{{if .tbd}}
 	<div class="postamble">
 		<p>
@@ -45,7 +45,10 @@ no rain
 </span>
 <span class="min-temp">lo: {{printf "%.2f" .MinTemp}}°</span>
 <span class="max-temp">hi: {{printf "%.2f" .MaxTemp}}°</span>
-<span class="max-wind">wind: {{.MaxWindSpeed}} mph</span>
+<span class="max-wind">wind: {{printf "%.2f" .MaxWindSpeed}} mph</span>
+{{if eq $i 10}}
+<img style="max-width:100%;" alt="311 logo" src="https://bigboy.us/other/311_logo.png" />
+{{end}}
 {{end}}
 </div>
 {{end}}

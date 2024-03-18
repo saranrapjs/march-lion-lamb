@@ -38,7 +38,7 @@
 {{if not .Future}}
 <span class="rain">
 {{if gt .Rain 0.0}}
-rain: {{.Rain}} in.
+rain: {{printf "%.2f" .Rain}} in.
 {{else}}
 no rain
 {{end}}
